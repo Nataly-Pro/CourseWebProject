@@ -51,8 +51,8 @@
       "message": 1,
       "start_date": "2023-12-03T23:47:24Z",
       "end_date": "2023-12-14T04:45:11Z",
-      "interval": "д",
-      "status": "с",
+      "interval": "ежедневно",
+      "status": "Создана",
       "mail_to": [
         1,
         4
