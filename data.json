@@ -1,0 +1,107 @@
+[
+  {
+    "model": "sendmail.client",
+    "pk": 1,
+    "fields": {
+      "full_name": "Т. Наталья Юрьевна",
+      "email": "tomovan@inbox.ru",
+      "comment": ""
+    }
+  },
+  {
+    "model": "sendmail.client",
+    "pk": 2,
+    "fields": {
+      "full_name": "Томова Наталья",
+      "email": "natalyayurevna19@gmail.com",
+      "comment": ""
+    }
+  },
+  {
+    "model": "sendmail.client",
+    "pk": 4,
+    "fields": {
+      "full_name": "Я на Яндексе",
+      "email": "natalyayurevna19@yandex.ru",
+      "comment": ""
+    }
+  },
+  {
+    "model": "sendmail.client",
+    "pk": 5,
+    "fields": {
+      "full_name": "test",
+      "email": "test@mail.ru",
+      "comment": ""
+    }
+  },
+  {
+    "model": "sendmail.message",
+    "pk": 1,
+    "fields": {
+      "title": "Приветствие:)",
+      "content": "Добро пожаловать!"
+    }
+  },
+  {
+    "model": "sendmail.mailing",
+    "pk": 1,
+    "fields": {
+      "name": "Первая тестовая",
+      "message": 1,
+      "start_date": "2023-12-03T23:47:24Z",
+      "end_date": "2023-12-14T04:45:11Z",
+      "interval": "д",
+      "status": "с",
+      "mail_to": [
+        1,
+        4
+      ]
+    }
+  },
+  {
+    "model": "sendmail.logs",
+    "pk": 3,
+    "fields": {
+      "last_mailing_time": "2023-12-03T06:45:02.506Z",
+      "status": null,
+      "response": null
+    }
+  },
+  {
+    "model": "sendmail.logs",
+    "pk": 4,
+    "fields": {
+      "last_mailing_time": "2023-12-03T06:52:02.645Z",
+      "status": null,
+      "response": "отправлено"
+    }
+  },
+  {
+    "model": "sendmail.logs",
+    "pk": 5,
+    "fields": {
+      "last_mailing_time": "2023-12-03T06:54:02.624Z",
+      "status": null,
+      "response": "отправлено"
+    }
+  },
+  {
+    "model": "sendmail.logs",
+    "pk": 6,
+    "fields": {
+      "last_mailing_time": "2023-12-03T23:43:32.989Z",
+      "status": null,
+      "response": "отправлено"
+    }
+  },
+  {
+    "model": "sendmail.logs",
+    "pk": 7,
+    "fields": {
+      "last_mailing_time": "2023-12-03T23:48:02.902Z",
+      "status": null,
+      "response": "отправлено"
+    }
+  }
+]
