@@ -1,11 +1,12 @@
 from django.conf import settings
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic import CreateView
-from users.forms import RegisterForm
+from users.forms import RegisterForm, ModeratorForm
 from users.models import User
 from django.utils.crypto import get_random_string
 
@@ -16,6 +17,25 @@ class UserLoginView(LoginView):
 
 class UserLogoutView(LogoutView):
     pass
+
+
+@login_required
+@permission_required(['users.view_user', 'users.set_is_active'])
+def get_users_list(request):
+    users_list = User.objects.all()
+    form = ModeratorForm
+    context = {
+        'object_list': users_list,
+        'form': form
+    }
+    # if request.method == 'POST':
+    #     for user in users_list:
+    #         if request.POST.get('is_active') == 'Null':
+    #             user.is_active = False
+    #         else:
+    #             user.is_active = True
+    #         user.save(update_fields=['is_active'])
+    return render(request, 'users/users_list.html', context)
 
 
 class RegisterView(CreateView):
@@ -50,29 +70,3 @@ def verification(request, verify_code):
         return redirect('users:success_verify')
     except (AttributeError, ValidationError):
         return redirect('users:invalid_verify')
-
-
-# def reset_password(request):
-#     if request.method == 'POST':
-#         email = request.POST.get('email')
-#         user = User.objects.get(email=email)
-#         new_password = get_random_string(12)
-#         send_mail(
-#             subject='Восстановление пароля',
-#             message=f'Для входа используйте новый пароль: {new_password}',
-#             from_email=settings.EMAIL_HOST_USER,
-#             recipient_list=[user.email],
-#             fail_silently=False,
-#         )
-#         user.set_password(new_password)
-#         user.save()
-#         return redirect('users:login')
-#     else:
-#         form = ResetForm
-#         context = {
-#             'form': form
-#         }
-#         return render(request, 'users/reset_password.html', context)
-#
-
-
