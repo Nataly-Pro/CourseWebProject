@@ -42,10 +42,9 @@ INSTALLED_APPS = [
     'sendmail',
     'django_apscheduler',
     'users',
-    'crispy_forms',
 ]
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
