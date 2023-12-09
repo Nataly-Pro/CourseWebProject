@@ -11,11 +11,12 @@ def my_job():
     month = timedelta(days=30, hours=0, minutes=0)
 
     mailings = Mailing.objects.all().filter(status='Создана')\
+        .filter(is_activated=True)\
         .filter(next_date__lte=datetime.now(pytz.timezone('Europe/Moscow')))\
         .filter(end_date__gte=datetime.now(pytz.timezone('Europe/Moscow')))
 
     for mailing in mailings:
-        print(mailing.start_date)
+        print(mailing.name)
         mailing.status = 'Активна'
         mailing.save()
         emails_list = [client.email for client in mailing.mail_to.all()]
@@ -50,7 +51,7 @@ def my_job():
         else:
             mailing.status = 'Завершена'
         mailing.save()
-        print(mailing.next_date)
+        print(mailing.status)
 
 
 if __name__ == "__main__":
