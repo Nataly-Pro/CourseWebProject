@@ -15,4 +15,4 @@ class MessageAdmin(admin.ModelAdmin):
 
 @admin.register(Mailing)
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ('name', 'start_date', 'end_date', 'interval',)
+    list_display = ('name', 'start_date', 'end_date', 'interval', 'status', 'owner')
