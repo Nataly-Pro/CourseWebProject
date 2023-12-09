@@ -4,6 +4,8 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
+import users.models
+
 NULLABLE = {'null': True, 'blank': True}
 STATUS_CHOICES = [
     ('Создана', 'Создана'),
@@ -23,7 +25,7 @@ class Client(models.Model):
     comment = models.TextField(verbose_name='комментарий', **NULLABLE)
 
     def __str__(self):
-        return f'{self.email}'
+        return f'{self.email} ({self.full_name})'
 
     class Meta:
         verbose_name = 'клиент'
@@ -47,10 +49,13 @@ class Mailing(models.Model):
     mail_to = models.ManyToManyField(Client, verbose_name='кому')
     message = models.ForeignKey(Message, on_delete=models.CASCADE, verbose_name='сообщение', **NULLABLE)
     start_date = models.DateTimeField(default=timezone.now, verbose_name='время старта рассылки')
-    next_date = models.DateTimeField(default=start_date, verbose_name='время следующей рассылки')
+    next_date = models.DateTimeField(default=timezone.now, verbose_name='время следующей рассылки')
     end_date = models.DateTimeField(verbose_name='время окончания рассылки')
     interval = models.CharField(max_length=50, choices=INTERVAL_CHOICES, verbose_name='периодичность')
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, help_text="Выберите Создана или Завершена")
+
+    owner = models.ForeignKey(users.models.User, on_delete=models.SET_NULL, null=True, verbose_name='Владелец рассылки')
+    is_activated = models.BooleanField(default=True, verbose_name='действующая')
 
     def __str__(self):
         return f'"{self.name}"'
@@ -58,6 +63,11 @@ class Mailing(models.Model):
     class Meta:
         verbose_name = 'рассылка'
         verbose_name_plural = 'рассылки'
+        ordering = ('start_date',)
+
+        permissions = [
+            ('set_is_activated', 'Может отключать рассылку')
+        ]
 
 
 class Logs(models.Model):

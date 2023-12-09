@@ -3,7 +3,7 @@
     "model": "sendmail.client",
     "pk": 1,
     "fields": {
-      "full_name": "Т. Наталья Юрьевна",
+      "full_name": "Томова Наталья",
       "email": "tomovan@inbox.ru",
       "comment": ""
     }
@@ -12,26 +12,8 @@
     "model": "sendmail.client",
     "pk": 2,
     "fields": {
-      "full_name": "Томова Наталья",
-      "email": "natalyayurevna19@gmail.com",
-      "comment": ""
-    }
-  },
-  {
-    "model": "sendmail.client",
-    "pk": 4,
-    "fields": {
-      "full_name": "Я на Яндексе",
+      "full_name": "Т. Наталья Юрьевна",
       "email": "natalyayurevna19@yandex.ru",
-      "comment": ""
-    }
-  },
-  {
-    "model": "sendmail.client",
-    "pk": 5,
-    "fields": {
-      "full_name": "test",
-      "email": "test@mail.ru",
       "comment": ""
     }
   },
@@ -39,8 +21,16 @@
     "model": "sendmail.message",
     "pk": 1,
     "fields": {
-      "title": "Приветствие:)",
-      "content": "Добро пожаловать!"
+      "title": "Приветствие!",
+      "content": "Добро пожаловать!!!"
+    }
+  },
+  {
+    "model": "sendmail.message",
+    "pk": 2,
+    "fields": {
+      "title": "Напоминание!",
+      "content": "Не забыть:)"
     }
   },
   {
@@ -49,59 +39,82 @@
     "fields": {
       "name": "Первая тестовая",
       "message": 1,
-      "start_date": "2023-12-03T23:47:24Z",
-      "end_date": "2023-12-14T04:45:11Z",
+      "start_date": "2023-12-06T21:00:00Z",
+      "next_date": "2023-12-07T23:18:06Z",
+      "end_date": "2023-12-08T07:32:00Z",
       "interval": "ежедневно",
       "status": "Создана",
+      "owner": "natalyayurevna19@yandex.ru",
+      "is_active": true,
       "mail_to": [
-        1,
-        4
+        2
       ]
+    }
+  },
+  {
+    "model": "sendmail.mailing",
+    "pk": 2,
+    "fields": {
+      "name": "Дополнительная",
+      "message": 2,
+      "start_date": "2023-12-06T23:19:13Z",
+      "next_date": "2023-12-07T23:19:57Z",
+      "end_date": "2023-12-07T21:00:00Z",
+      "interval": "ежедневно",
+      "status": "Создана",
+      "owner": "natalyayurevna19@yandex.ru",
+      "is_active": true,
+      "mail_to": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "sendmail.mailing",
+    "pk": 5,
+    "fields": {
+      "name": "test",
+      "message": 2,
+      "start_date": "2023-12-07T07:23:00Z",
+      "next_date": "2023-12-08T00:23:34Z",
+      "end_date": "2023-12-08T07:23:00Z",
+      "interval": "ежедневно",
+      "status": "Создана",
+      "owner": "admin@sky.pro",
+      "is_active": true,
+      "mail_to": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "sendmail.logs",
+    "pk": 1,
+    "fields": {
+      "message": null,
+      "last_mailing_time": "2023-12-07T00:34:32.779Z",
+      "status": "отправлено",
+      "response": null
+    }
+  },
+  {
+    "model": "sendmail.logs",
+    "pk": 2,
+    "fields": {
+      "message": null,
+      "last_mailing_time": "2023-12-07T00:34:34.798Z",
+      "status": "отправлено",
+      "response": null
     }
   },
   {
     "model": "sendmail.logs",
     "pk": 3,
     "fields": {
-      "last_mailing_time": "2023-12-03T06:45:02.506Z",
-      "status": null,
+      "message": null,
+      "last_mailing_time": "2023-12-07T00:34:36.368Z",
+      "status": "отправлено",
       "response": null
-    }
-  },
-  {
-    "model": "sendmail.logs",
-    "pk": 4,
-    "fields": {
-      "last_mailing_time": "2023-12-03T06:52:02.645Z",
-      "status": null,
-      "response": "отправлено"
-    }
-  },
-  {
-    "model": "sendmail.logs",
-    "pk": 5,
-    "fields": {
-      "last_mailing_time": "2023-12-03T06:54:02.624Z",
-      "status": null,
-      "response": "отправлено"
-    }
-  },
-  {
-    "model": "sendmail.logs",
-    "pk": 6,
-    "fields": {
-      "last_mailing_time": "2023-12-03T23:43:32.989Z",
-      "status": null,
-      "response": "отправлено"
-    }
-  },
-  {
-    "model": "sendmail.logs",
-    "pk": 7,
-    "fields": {
-      "last_mailing_time": "2023-12-03T23:48:02.902Z",
-      "status": null,
-      "response": "отправлено"
     }
   }
 ]
