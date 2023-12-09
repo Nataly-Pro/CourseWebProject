@@ -13,6 +13,9 @@
     <nav class="ms-5">
         <a class="p-2 btn btn-outline-primary" href="{% url 'sendmail:home' %}">Рассылки</a>
         <a class="p-2 btn btn-outline-primary" href="{% url 'sendmail:message_list' %}">Сообщения</a>
+        {% if user.role == moderator %}
+            <a class="p-2 btn btn-outline-primary" href="{% url 'users:users' %}">Пользователи</a>
+        {% endif %}
         {% if user.is_authenticated %}
             <p>{{ user.email }}</p>
             <a class="p-2 btn btn-outline-primary" href="{% url 'users:logout' %}">Выйти</a>
