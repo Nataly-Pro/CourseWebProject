@@ -16,8 +16,7 @@ def my_job():
         .filter(end_date__gte=datetime.now(pytz.timezone('Europe/Moscow')))
 
     for mailing in mailings:
-        print(mailing.name)
-        mailing.status = 'Активна'
+        mailing.status = 'Запущена'
         mailing.save()
         emails_list = [client.email for client in mailing.mail_to.all()]
 
@@ -28,16 +27,14 @@ def my_job():
             recipient_list=emails_list,
             fail_silently=False,
         )
-        print(result)
 
         if result == 1:
-            status = 'отправлено'
+            status = 'Отправлено'
         else:
-            status = 'ошибка отправки'
+            status = 'Ошибка отправки'
 
         log = Logs(status=status)
         log.save()
-        print(log.last_mailing_time)
 
         if mailing.interval == 'ежедневно':
             mailing.next_date += day
@@ -51,7 +48,7 @@ def my_job():
         else:
             mailing.status = 'Завершена'
         mailing.save()
-        print(mailing.status)
+
 
 
 if __name__ == "__main__":
