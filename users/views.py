@@ -1,11 +1,12 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.shortcuts import redirect, render
 from django.urls import reverse
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 from users.forms import RegisterForm, ModeratorForm
 from users.models import User
 from django.utils.crypto import get_random_string
@@ -17,25 +18,6 @@ class UserLoginView(LoginView):
 
 class UserLogoutView(LogoutView):
     pass
-
-
-@login_required
-@permission_required(['users.view_user', 'users.set_is_active'])
-def get_users_list(request):
-    users_list = User.objects.all()
-    form = ModeratorForm
-    context = {
-        'object_list': users_list,
-        'form': form
-    }
-    # if request.method == 'POST':
-    #     for user in users_list:
-    #         if request.POST.get('is_active') == 'Null':
-    #             user.is_active = False
-    #         else:
-    #             user.is_active = True
-    #         user.save(update_fields=['is_active'])
-    return render(request, 'users/users_list.html', context)
 
 
 class RegisterView(CreateView):
@@ -70,3 +52,24 @@ def verification(request, verify_code):
         return redirect('users:success_verify')
     except (AttributeError, ValidationError):
         return redirect('users:invalid_verify')
+
+
+class UserUpdateView(PermissionRequiredMixin, UpdateView):
+    model = User
+    form_class = ModeratorForm
+    permission_required = 'set_is_active'
+    success_url = 'users:users_list'
+
+    def get_success_url(self):
+        return reverse('users:list_view')
+
+
+@login_required
+@permission_required(['users.view_user', 'users.set_is_active'])
+def get_users_list(request):
+    users_list = User.objects.all()
+    context = {
+        'object_list': users_list,
+        'title': 'Список пользователей сервиса',
+    }
+    return render(request, 'users/users_list.html', context)
