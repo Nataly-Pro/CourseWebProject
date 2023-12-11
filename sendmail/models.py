@@ -1,18 +1,17 @@
-from datetime import datetime
-
-from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
 import users.models
 
 NULLABLE = {'null': True, 'blank': True}
+
 STATUS_CHOICES = [
     ('Создана', 'Создана'),
-    ('Активна', 'Активна'),
+    ('Запущена', 'Запущена'),
     ('Завершена', 'Завершена'),
 ]
 INTERVAL_CHOICES = [
+    ('разовая', 'разовая'),
     ('ежедневно', 'ежедневно'),
     ('раз в неделю', 'раз в неделю'),
     ('раз в месяц', 'раз в месяц'),
@@ -23,8 +22,12 @@ class Client(models.Model):
     full_name = models.CharField(max_length=150, verbose_name='ФИО')
     email = models.EmailField(verbose_name='почта')
     comment = models.TextField(verbose_name='комментарий', **NULLABLE)
+    owner = models.ForeignKey(users.models.User, on_delete=models.CASCADE, null=True, verbose_name='чей клиент')
 
     def __str__(self):
+        return f'{self.email} ({self.full_name})'
+
+    def __repr__(self):
         return f'{self.email} ({self.full_name})'
 
     class Meta:
@@ -35,6 +38,8 @@ class Client(models.Model):
 class Message(models.Model):
     title = models.CharField(max_length=250, verbose_name='тема')
     content = models.TextField(verbose_name='содержание')
+
+    owner = models.ForeignKey(users.models.User, on_delete=models.CASCADE, null=True, verbose_name='Владелец сообщения')
 
     def __str__(self):
         return self.title
@@ -51,10 +56,10 @@ class Mailing(models.Model):
     start_date = models.DateTimeField(default=timezone.now, verbose_name='время старта рассылки')
     next_date = models.DateTimeField(default=timezone.now, verbose_name='время следующей рассылки')
     end_date = models.DateTimeField(verbose_name='время окончания рассылки')
-    interval = models.CharField(max_length=50, choices=INTERVAL_CHOICES, verbose_name='периодичность')
+    interval = models.CharField(default='разовая', max_length=50, choices=INTERVAL_CHOICES, verbose_name='периодичность')
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, help_text="Выберите Создана или Завершена")
 
-    owner = models.ForeignKey(users.models.User, on_delete=models.SET_NULL, null=True, verbose_name='Владелец рассылки')
+    owner = models.ForeignKey(users.models.User, on_delete=models.CASCADE, null=True, verbose_name='Владелец рассылки')
     is_activated = models.BooleanField(default=True, verbose_name='действующая')
 
     def __str__(self):
@@ -71,14 +76,18 @@ class Mailing(models.Model):
 
 
 class Logs(models.Model):
-    message = models.ForeignKey(Message, on_delete=models.SET_NULL, verbose_name='сообщение', **NULLABLE)
+    mailing = models.ForeignKey(Mailing, on_delete=models.CASCADE, verbose_name='рассылка', **NULLABLE)
     last_mailing_time = models.DateTimeField(auto_now=True, verbose_name='время последней рассылки')
     status = models.CharField(max_length=50, verbose_name='статус попытки', null=True)
-    response = models.TextField(verbose_name='ответ сервера', default=None, null=True)
+
+    def __str__(self):
+        return f'Отправлено: {self.last_mailing_time}, ' \
+               f'Статус: {self.status}'
 
     class Meta:
         verbose_name = 'log'
         verbose_name_plural = 'logs'
+
 
 
 
