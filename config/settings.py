@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'sendmail',
     'django_apscheduler',
     'users',
+    'blog',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
