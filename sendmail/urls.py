@@ -3,17 +3,19 @@ from django.urls import path
 from sendmail.apps import SendmailConfig
 from sendmail.views import MessageListView, MessageCreateView, MessageUpdateView, \
     MessageDetailView, MessageDeleteView, MailingCreateView, MailingUpdateView, MailingDeleteView, MailingListView, \
-    MailingDetailView, MailingsInfoView, ClientListView, ClientCreateView, ClientUpdateView
+    MailingDetailView, ClientListView, ClientCreateView, ClientUpdateView, MailingUpdateModeratorView, \
+    HomeView
 
 app_name = SendmailConfig.name
 
 
 urlpatterns = [
-    path('', MailingsInfoView.as_view(), name='home'),
+    path('', HomeView.as_view(), name='home'),
     path('mailing_list', MailingListView.as_view(), name='mailing_list'),
     path('mailing_add/', MailingCreateView.as_view(), name='mailing_add'),
     path('mailing_view/<int:pk>', MailingDetailView.as_view(), name='mailing_view'),
     path('mailing_edit/<int:pk>/', MailingUpdateView.as_view(), name='mailing_edit'),
+    path('mailing_mod_edit/<int:pk>/', MailingUpdateModeratorView.as_view(), name='mailing_mod_edit'),
     path('mailing_delete/<int:pk>/', MailingDeleteView.as_view(), name='mailing_delete'),
     path('message_list/', MessageListView.as_view(), name='message_list'),
     path('message_add/', MessageCreateView.as_view(), name='message_add'),
