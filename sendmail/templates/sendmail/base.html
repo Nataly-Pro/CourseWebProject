@@ -15,7 +15,7 @@
         <a class="p-2 btn btn-outline-primary" href="{% url 'sendmail:mailing_list' %}">Рассылки</a>
         <a class="p-2 btn btn-outline-primary" href="{% url 'sendmail:message_list' %}">Сообщения</a>
         <a class="p-2 btn btn-outline-primary" href="{% url 'sendmail:client_list' %}">Клиенты</a>
-        {% if user.role == moderator %}
+        {% if perms.sendmail.set_is_active %}
             <a class="p-2 btn btn-outline-primary" href="{% url 'users:list_view' %}">Пользователи</a>
         {% endif %}
         {% if user.is_authenticated %}
