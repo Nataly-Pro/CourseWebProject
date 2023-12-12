@@ -14,7 +14,9 @@ class StyleFormMixin:
 
 class MailingForm(StyleFormMixin, forms.ModelForm):
 
-    def __init__(self, user, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request')
+        user = self.request.user
         super().__init__(*args, **kwargs)
         self.fields['mail_to'].queryset = Client.objects.filter(owner=user)
         self.fields['message'].queryset = Message.objects.filter(owner=user)
@@ -27,6 +29,13 @@ class MailingForm(StyleFormMixin, forms.ModelForm):
             'start_date': DateTimeInput(attrs={'placeholder': 'ДД.ММ.ГГГГ ЧЧ:ММ:СС', 'type': 'datetime-local'}),
             'end_date': DateTimeInput(attrs={'placeholder': 'ДД.ММ.ГГГГ ЧЧ:ММ:СС', 'type': 'datetime-local'}),
         }
+
+
+class MailingModeratorForm(StyleFormMixin, forms.ModelForm):
+
+    class Meta:
+        model = Mailing
+        fields = ('is_activated',)
 
 
 class MessageForm(StyleFormMixin, forms.ModelForm):
