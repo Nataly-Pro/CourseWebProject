@@ -1,11 +1,11 @@
 import random
-
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView, TemplateView
+from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 from blog.models import Blog
-from sendmail.forms import MailingForm, MessageForm, ClientForm
+from sendmail.forms import MailingForm, MessageForm, ClientForm, MailingModeratorForm
 from sendmail.models import Message, Mailing, Client, Logs
+from sendmail.services import get_cache_for_mailings, get_cache_for_active_mailings
 
 
 class MailingCreateView(LoginRequiredMixin, CreateView):
@@ -16,40 +16,40 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
         'title': 'Создание рассылки'
     }
 
-    def get_form(self, form_class=None):
-        form = MailingForm(user=self.request.user)
-        return form
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
     def form_valid(self, form, *args, **kwargs):
-        print('hello')
         if form.is_valid():
             new_mailing = form.save(commit=False)
             new_mailing.owner = self.request.user
             new_mailing.save()
-
         return super().form_valid(form)
 
 
 class MailingUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Mailing
     form_class = MailingForm
+    success_url = reverse_lazy('sendmail:mailing_list')
 
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        if self.request.user != self.object.owner:
-            mailing_fields = [field for field in form.fields.keys()]
-            for field in mailing_fields:
-                if not self.request.user.has_perm(f'sendmail.set_{field}'):
-                    del form.fields[field]
-        return form
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
     def test_func(self):
         if self.request.user.is_staff:
             return True
         return self.request.user == Mailing.objects.get(pk=self.kwargs['pk']).owner
 
-    def get_success_url(self):
-        return reverse('sendmail:mailing_view', args=[self.kwargs.get('pk')])
+
+class MailingUpdateModeratorView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    model = Mailing
+    form_class = MailingModeratorForm
+    success_url = reverse_lazy('sendmail:mailing_list')
+    permission_required = 'sendmail.set_is_activated'
 
 
 class MailingListView(LoginRequiredMixin, ListView):
@@ -59,14 +59,14 @@ class MailingListView(LoginRequiredMixin, ListView):
     }
 
 
-class MailingsInfoView(LoginRequiredMixin, ListView):
+class HomeView(ListView):
     model = Mailing
     template_name = 'sendmail/home.html'
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data['mailings_count'] = Mailing.objects.all().count()
-        context_data['active_mailings_count'] = Mailing.objects.filter(is_activated=True).count()
+        context_data['mailings_count'] = get_cache_for_mailings()
+        context_data['active_mailings_count'] = get_cache_for_active_mailings()
         blog_list = list(Blog.objects.all())
         random.shuffle(blog_list)
         context_data['blog_list'] = blog_list[:3]
